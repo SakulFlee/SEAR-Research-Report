@@ -1,0 +1,39 @@
+# Project files
+.idea/
+*.iml
+.vscode/
+
+# LaTeX build & generated files
+*-blx.bib
+*.acn
+*.acr
+*.alg
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.dav
+*.fdb_latexmk
+*.fls
+*.glg
+*.glo
+*.gls
+*.glsdefs
+*.idx
+*.ind
+*.ist
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.pytxcode
+
+# Generated files
+*.pdf
+
+# Visual Paradigm backupfiles
+*.vpp.*
