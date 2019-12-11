@@ -1,0 +1,35 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% 003 - Commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Create a labeled chapter
+\newcommand{\labeledchapter}[1]{\chapter{#1} \label{cha:#1}}
+
+% Create a labeled section
+\newcommand{\labeledsection}[1]{\section{#1} \label{sec:#1}}
+
+% Create a labeled subsection
+\newcommand{\labeledsubsection}[1]{\subsection{#1} \label{subsec:#1}}
+
+% Create a labeled subsubsection
+\newcommand{\labeledsubsubsection}[1]{\subsubsection{#1} \label{subsubsec:#1}}
+
+% Create a labeled paragraph
+\newcommand{\labeledparagraph}[1]{\paragraph{#1} \label{para:#1}}
+
+% Create a labeled paragraph with line break
+\newcommand{\labeledparagraphWLB}[1]{\labeledparagraph{#1} \mbox{}}
+
+% Create a labeled abstract
+% Note: won't show in the table of contents
+\renewcommand{\abstract}{\section*{Abstract} \label{sec:abstract}}
+
+% Let each section start on a new page [the 'titlesec' way]
+\newcommand{\sectionbreak}{\clearpage}
+
+% Let each section start on a new page [the 'redefine' way, just in case the above doesn't work]
+\let\stdsection\section
+\renewcommand\section{\newpage\stdsection}
+
+% PlantUML -> PNGs & Include
+\newcommand{\uml}[2]{\immediate\write18{plantuml -verbose #1.puml} \includegraphics[#2]{#1.png}}
