@@ -1,33 +1,33 @@
 \labeledsection{Introduction}
-The topic of this research report is rather utilizing and implementing Dependency-Injection in Java-Applications comes with more potential dangers than benefits or not.
+Dependency-Injection is a technique used to dynamically add and load \textit{dependencies} within an application.
+Although, the name implies that \textit{dependencies} are added, these \textit{dependencies} however are not necessarily required.
+When referring to \textit{injecting} such a \textit{dependency} we either, mean overwriting a required \textit{dependency} and thus changing its behavior, or, adding and loading a new previously not needed \textit{dependency} to extend the application in some form.
 
-Overall, this report will first explain what Dependency-Injection in Java looks lie, what is important to know and how it works on a basic level.
+When loading a new \textit{dependency} we call it \textit{Planned Dependency-Injection} or \textit{Wanted Dependency-Injection}.
+This is more commonly know and understood as an application having a \textit{Plugin-System} or the ability to load \textit{plugins}.
+From now on we will use the term \underline{plugin} in context of a \textit{Planned Dependency-Injection}.
+Actively implementing \textit{Dependency-Injection} and expecting \textit{plugins} to be injected implies, that at some point, somewhere within the system (not necessarily application), something needs to inject, and thus add and load, this \textit{plugin}.
+If an application is designed to expect \textit{dependencies} to be \textit{injected} it usually also takes care of loading and managing \textit{plugins}.
+But it is also possible to allow \textit{dependencies} to be \textit{injected} without managing \textit{plugins}.
+In either case at least an entry point for the \textit{plugin} is needed. 
+This is usually done by defining a public-api that provides a way of defining said entry-point and possible more.
 
-Overall, this report will first explain what Dependency-Injection in Java looks like, what is needed for it and how it works.
-Then, a qualitative multi-stage experiment is discussed and finally the results and findings are presented.
+The opposite scenario, an application that is not designed to except or accept \textit{dependencies} to be \textit{injected}, does not need any of the above.
+Virtually any application that is not actively encouraging \textit{dependency-injection} or exposing a plugin-api fall into this category.
+Simply not implementing a \textit{plugin-system} does not protect your application.
+In theory, any library that is used or even the application itself can be injected with \underline{bad code}\footnote{Malicious instructions} or replaced all together.
+There are a few things someone can do to ensure the safety and minimizing the risk of this happening such as releasing not only the binaries, but also a hashed file to compare against to spot modifications or restricting access to the application and libraries.
+However, overall almost any application and library is vulnerable to this.
+For some binaries it is easier to do, for some harder.
+To be a 100\% protected from this one would have to write \textbf{everything}, including compilers, libraries, programs, etc., themselves and restrict access to \underline{only them}.
 
-\begin{enumerate}
-    \item What is Java Dependency-Injection?
-    \item What kind of Java Dependency-Injection are there?
-      'wanted dependency injection' (Plugin-System)
-      'abuse of wanted Dependency-Injection'
-      'unwanted Dependency-Injection' [-> only mention]
-    \item What are the positive benefits vs. negative impacts?c
-\end{enumerate}
+There is also a mid-case scenario where the application encourages \textit{dependencies} to be changed/injected, but does not actively engage in anything other than using said library.
+One can write an API for a specific task, e.g. managing a cloud provider, and release for each difference another library.
+The user/administrator then can chose which library they use, in this case which cloud provider they are using, and install/overwrite that specific library.
+This works as the application is designed in a way that it expects a certain \textit{dependency} to be at a certain spot and that this library is implemented using the API.
+The application then can load the library independent of which implementation it is and call the APIs functions, which then will get translated to function calls from the replaced library.
+This scenario can also be seen as modding\footnote{Modding as in modifying} an application which can be often found in various games.
 
-\chapter{The experiment}
-    % Research topic
-    The experiment will prove the potential risk of actively using Java-Dependency-Injection to add or modify data, structures and objects at runtime.
-    % Research element
-    During the experiment a made-up application will be exposed to three beneficial exploits.
-    With each iteration the security of said application will improve and shield against the previous exploit.  
-    This way, different security levels and potential risks are measured. 
-    Additionally, we expect the total effective damage to decrease with each security level.
-    % Variables
-    \begin{tabular}{|r|l|}
-        /hline
-        Security level & The implemented security measures, placed on an artificial scale. Generally, with each incrementum the security of the overall application is improved significantly. \\\hline
-        Effective damage & Damage to the application or business process involved in using this application, which is \textbf{measurable} and can be presented \\\hline
-        Potential risk & Risks that are present and could be exploited by others, though \textbf{not} directly measurable and only hypothetical. \\\hline
-    \end{tabular}
-    % Values ... Measure!
+% TODO: abuse of wanted Dependency-Injection
+
+% TODO: What are the positive benefits vs. negative impacts?
