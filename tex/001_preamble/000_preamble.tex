@@ -1,0 +1,20 @@
+%%% Numbering in roman
+% Start with roman numbers
+\pagenumbering{roman}
+
+% Include pages
+\input{./tex/001_preamble/001_title_page.tex}
+\input{./tex/001_preamble/002_abstract.tex}
+\input{./tex/001_preamble/003_table_of_contents.tex}
+\input{./tex/001_preamble/004_bibliography.tex}
+
+%%% Numbering in arabic
+\pagenumbering{arabic}
+
+% Reset counter
+\setcounter{page}{1}
+
+% Remove the comment if you want to color the links in your document AFTER the table of contents.
+% Note that if you change the color BEFORE the table of contents, the entire table of contents will be in that color.
+% [Requires hyperref]
+% \hypersetup{linkcolor=blue}

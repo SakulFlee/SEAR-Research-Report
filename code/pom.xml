@@ -10,14 +10,8 @@
 
     <modules>
         <module>plugin-api</module>
-        <module>plugin-system-level-0</module>
-        <module>plugin-system-level-1</module>
-        <module>plugin-system-level-2</module>
-        <module>plugin-system-level-3</module>
-        <module>plugin-level-0</module>
-        <module>plugin-level-1</module>
-        <module>plugin-level-2</module>
-        <module>plugin-level-3</module>
+        <module>plugin-system</module>
+        <module>plugin</module>
     </modules>
 
     <build>

@@ -31,10 +31,14 @@ I: User-error (e.g. manual overwrite of dependencies or plugins; OUTSIDE of the 
 
 ### Capture hypothesis
 
-X: Difference in security of application
+P: Security knowledge
+X: System/Environment security
+I: "User (security) Error/Issue"
 Y: Potential damage / risk / threads
-P: is given
-I: is theoretical
+
+Security Knowledge → System Security → Potential damage / risk / threads
+                                     ↑
+                        "User (security) Error/Issue"
 
 ### How to capture hypothesis
 

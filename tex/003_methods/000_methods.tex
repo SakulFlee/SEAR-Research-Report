@@ -1,0 +1,160 @@
+\labeledsection{Experiment}
+Before starting the experiment it has to be created first.
+In order to implement a plugin-system there are multiple requirements that first have to be fulfilled.
+A \textit{plugin} has to be loaded and, in order to be useful, has to conduct a certain task.
+For simplicity, the experiment will implement the plugin-system directly, without anything else, and the \textit{plugin} will conduct a very simple task.
+The ultimate goal is to show and explain how a \textbf{wanted dependency-injection} works and what risks come with it.
+Furthermore, with the acquired knowledge a greater picture of risks and threats about the overall \textbf{dependency-injection} topic can be made.
+
+It is also important to note that the experiment is implemented in \texttt{Java}.
+The same overall idea can be applied to other programming languages as well, but will be implemented differently.
+
+\labeledsubsection{Experiment preparation}
+A way of loading these plugins is needed.
+Furthermore, this needs to be setup first.
+Next, the \textit{plugin} has to be loaded.
+Once loaded, the injected classes must be found and the \textit{plugin} initialized.
+Finally, the \textit{plugin} task will be invoked.
+
+\labeledsubsubsection{Agent loading}
+The plugin-system needs a way of loading a plugin.
+In \texttt{Java} loading means either, appending it to the classpath of the current environment (JRE\footnote{Java-Runtime-Environment}), or, creating a new secondary classpath with a new class loader implementation.
+
+The official way of modifying the class-path at runtime is to use an \texttt{Java Agent} / the \texttt{java.lang.Instrument} package. \\
+From the \textcite{javadoc:instrument}:
+\begin{quote}
+    [The package p]rovides services that allow Java programming language agents to instrument programs running on the JVM\footnote{Java-Virtual-Machine}.\newline
+    The mechanism for instrumentation is modification of the byte-codes of methods.
+\end{quote}~\parencite{javadoc:instrument}\\
+This is usually used by diagnostic tools, such as debugger, tracer or profiler, to get access over the current JRE and heap to perform modifications or analytic work.
+However, the experiment will use it to inject our dependency (plugin) into the classpath and then access the class loader to find the injected classes and finally invoke them.
+
+For an \texttt{agent} to work properly, certain preparations have to be made:
+First, a \lstinline{agentmain} and \lstinline{premain} has to be defined.
+Next, the classpath of those methods must go into the \texttt{MANIFEST.MF}.
+Finally, the application must be run with a special VM parameter to accept agents.
+
+The following code shows how to implement those methods.
+\lstinputlisting[language=Java, linerange={36-41, 264-290}]{./code/plugin-system/src/main/java/nl/fontys/sear/plugin_system/system/PluginLoader.java}
+The \lstinline{premain} gets called when the JRE loads the agent JAR.
+The \lstinline{agentmain} gets called when the \texttt{agent} got attached to the process.
+In most cases one of them is enough, however as \texttt{agent} implementation differs from different Java versions it is safer to define both and let them call each other.
+Both methods have two arguments: 
+The \lstinline{premain}/\lstinline{agentmain} arguments and the \lstinline{instrumentation}.
+The plugin-system needs the \lstinline{instrumentation}, thus it has to be stored globally/statically somewhere, where the plugin-system later can access it.
+It is important to \textbf{not} invoke anything else here and \textbf{not} call the \textit{standard} \lstinline{main}.
+
+\clearpage
+
+After defining both methods, the classpath of the class(es) these methods are in must be defined in the \lstinline{MANIFEST.MF}.\\
+From the experiment:
+\lstinputlisting[
+    language=Manifest,
+    showspaces=false,
+    showtabs=false,
+    breaklines=true,
+    showstringspaces=false,
+    breakatwhitespace=true,
+    numbers=left,
+    basicstyle=\footnotesize\ttfamily\color{darkgray},
+    keywordstyle=\bfseries\color{darkgray},
+    commentstyle=\itshape\color{darkgray},
+    identifierstyle=\color{darkgray},
+    stringstyle=\color{darkgray},
+]{./code/plugin-system/src/main/resources/META-INF/MANIFEST.MF}
+
+Finally, when starting the application it is important to add the \lstinline{-javagent:<PATH TO JAR>} as a VM parameter.
+For simplicity reasons we put the \lstinline{premain} and \lstinline{agentmain} into the same JAR.
+However, it is also possible to put them in a separate JAR.
+Either way, the location of this JAR must be set.
+Otherwise, the JVM will not recognize the \lstinline{premain}, nor \lstinline{agentmain}, and the \lstinline{instrumentation} variable will be \texttt{null}.
+
+\labeledsubsubsection{Loading plugins (injecting dependencies)}
+With the previous step the plugin-system finally can access the classpath and append potential plugins to it.
+To do this, a \textit{plugin} must exist.
+What exactly a \textit{plugin} is and how it is defined in our experiment is discussed in the next sub-sub-section.
+For now, we assume that a \textit{plugin} exists (in JAR form) at a fixed location, the application has access to it and it is a valid JAR.
+From now on everything is done outside of the \texttt{agent}, so our plugin-system starts in the \textit{standard} \lstinline{main}.
+
+First, a file to the location of that \textit{plugin} has to be created.\\
+From the \textcite{javadoc:file}:
+\begin{quote}
+    (\dots)
+    \\
+    User interfaces and operating systems use system-dependent pathname strings to name files and directories. This class presents an abstract, system-independent view of hierarchical pathnames. An abstract pathname has two components:
+
+        1. An optional system-dependent prefix string, such as a disk-drive specifier, "/" for the UNIX root directory, or "\textbackslash\textbackslash\textbackslash\textbackslash" for a Microsoft Windows UNC pathname, and
+
+        2. A sequence of zero or more string names.
+
+    The first name in an abstract pathname may be a directory name or, in the case of Microsoft Windows UNC pathnames, a hostname. Each subsequent name in an abstract pathname denotes a directory; the last name may denote either a directory or a file. The empty abstract pathname has no prefix and an empty name sequence.
+    \\
+    (\dots)
+\end{quote}~\parencite{javadoc:file}\\
+In \texttt{Java}, a \lstinline{File} is basically a reference to a location within the file-system.
+It does not have to exist and is not opened directly.
+For lucidness, file validation checks such as if the file exists and is accessible will be skipped here.
+
+Once the \lstinline{File} is defined a \lstinline{JarFile} has to be created, with the \lstinline{File} as an argument.
+From the \textcite{javadoc:jar_file}:
+\begin{quote}
+    The JarFile class is used to read the contents of a jar file from any file that can be opened with java.io.RandomAccessFile. It extends the class java.util.zip.ZipFile with support for reading an optional Manifest entry. The Manifest can be used to specify meta-information about the jar file and its entries.
+    \\
+    (\dots)
+\end{quote}~\parencite{javadoc:jar_file}\\
+A \lstinline{JarFile} is capable of reading and writing to a \lstinline{File} in JAR form.
+This is important for extracting information, such as classes and resources, from the JAR.
+
+Finally, the \lstinline{instrumentation} can be used to append the \lstinline{JarFile} to the system classpath by calling \lstinline{Instrumentation::appendToSystemClassLoaderSearch}.
+From the \textcite{javadoc:instrumentation}:
+\begin{quote}
+    This class provides services needed to instrument Java programming language code. Instrumentation is the addition of byte-codes to methods for the purpose of gathering data to be utilized by tools. Since the changes are purely additive, these tools do not modify application state or behavior. Examples of such benign tools include monitoring agents, profilers, coverage analyzers, and event loggers.
+    \\
+    (\dots)
+    \\
+    \textit{void appendToSystemClassLoaderSearch(JarFile jarfile)}\\
+    Specifies a JAR file with instrumentation classes to be defined by the system class loader. When the system class loader for delegation (see getSystemClassLoader()) unsuccessfully searches for a class, the entries in the JarFile will be searched as well.
+\end{quote}~\parencite{javadoc:instrumentation}
+This method adds the \textit{plugin} \lstinline{JarFile} to the system classpath.
+If a class is searched (by name), the class-loader will iterate through all classpath sources until a fitting class is found.
+If not, an exception is thrown.
+This also gives the option to query through all classes and find the \textit{plugin} classes/methods.
+
+The full operation may look like this:
+\begin{lstlisting}
+    // Define File with location of plugin
+    final File pluginFile = new File("path-to-jar/plugin.jar");
+    // File validations & constraints ...
+
+    // Create JarFile from 'pluginFile'
+    final JarFile pluginJAR = new JarFile(pluginFile);
+
+    // Append JarFile to system classpath
+    instrumentation.appendToSystemClassLoaderSearch(jarFile);
+\end{lstlisting}
+
+\labeledsubsubsection{Defining a plugin}
+The previous sub-sub-sections already prepared everything to load a plugin.
+However, it is not yet defined what a \textit{plugin} actually is.
+This sub-sub-section is important for the following sub-sub-section.
+
+There are multiple ways of defining a \textit{plugin}.
+One way would be to use specific class and method names.
+Another way is to utilize \underline{interfaces} and/or \underline{abstract classes}.
+In \texttt{Java}, there is a third good option: 
+Using \underline{annotations} / \underline{@interfaces}.
+
+The experiment uses 
+
+
+\labeledsubsubsection{Finding the plugin (injected dependency)}
+Bla \dots
+
+\labeledsubsection{Full experiment}
+Bla \dots
+
+\labeledsubsubsection{Potential risks and threads of a plugin-system (wanted dependency injection)}
+Bla \dots
+
+\labeledsubsubsection{Potential risks and threads extended scope}
+Bla \dots
