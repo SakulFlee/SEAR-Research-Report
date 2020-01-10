@@ -5,10 +5,8 @@ import nl.fontys.sear.plugin_system.api.Enable;
 import nl.fontys.sear.plugin_system.api.PluginInfo;
 import nl.fontys.sear.plugin_system.api.Task;
 
-@PluginInfo(name = "Example", version = "Level-0")
+@PluginInfo(name = "Example", version = "Alpha-0.0.1")
 public class PluginMain {
-
-    /* bla */
     @Enable
     public void enable() {
         System.out.println("Enable!");
@@ -21,6 +19,6 @@ public class PluginMain {
 
     @Task
     public void task() {
-        System.out.println("TASK!");
+        System.out.println("Task!");
     }
 }

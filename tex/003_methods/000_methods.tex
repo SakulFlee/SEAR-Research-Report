@@ -108,7 +108,7 @@ This is important for extracting information, such as classes and resources, fro
 Finally, the \lstinline{instrumentation} can be used to append the \lstinline{JarFile} to the system classpath by calling \lstinline{Instrumentation::appendToSystemClassLoaderSearch}.
 From the \textcite{javadoc:instrumentation}:
 \begin{quote}
-    This class provides services needed to instrument Java programming language code. Instrumentation is the addition of byte-codes to methods for the purpose of gathering data to be utilized by tools. Since the changes are purely additive, these tools do not modify application state or behavior. Examples of such benign tools include monitoring agents, profilers, coverage analyzers, and event loggers.
+    This class provides services needed to instrument Java programming language code. Instrumentation is the addition of byte-codes to methods for the purpose of gathering data to be utilized by tools. Since the changes are purely additive, these tools do not modify application state or behavior. experiments of such benign tools include monitoring agents, profilers, coverage analyzers, and event loggers.
     \\
     (\dots)
     \\
@@ -142,13 +142,84 @@ There are multiple ways of defining a \textit{plugin}.
 One way would be to use specific class and method names.
 Another way is to utilize \underline{interfaces} and/or \underline{abstract classes}.
 In \texttt{Java}, there is a third good option: 
-Using \underline{annotations} / \underline{@interfaces}.
+Using \underline{annotations} (\underline{@interfaces}).
 
-The experiment uses 
+The experiment uses an \underline{annotation} to denote a class as a \textit{plugin-class}.
+A \textit{plugin-class} is the entry-point of a plugin.
+It defines the name and version of a plugin and the class that is annotated will be searched for \textit{plugin-methods}, which will be handled next.
+The following code shows how the class \underline{annotation} is defined in the experiment:
+\lstinputlisting[language=Java, linerange={8-14}]{./code/plugin-api/src/main/java/nl/fontys/sear/plugin_system/api/PluginInfo.java}
 
+Another \underline{annotation} is used to denote the exact \textit{plugin-method}.
+Said method is the main reason why the \textit{plugin-system} wanted to load the \textit{plugin} in the first place.
+In a real scenario this method would either initialize the plugin or perform a certain task that is wanted by the \textit{plugin-system}.
+This is also the main attack point in the later analysis.
+\lstinputlisting[language=Java, linerange={8-11}]{./code/plugin-api/src/main/java/nl/fontys/sear/plugin_system/api/Task.java}
+
+\clearpage
+
+An example plugin entry-point class would look like this:
+\lstinputlisting[language=Java, linerange={8-9, 20-23, 24}]{./code/plugin/src/main/java/nl/fontys/sear/plugin_system/plugin/PluginMain.java}
 
 \labeledsubsubsection{Finding the plugin (injected dependency)}
-Bla \dots
+Now, that the \textit{plugin} is defined and loaded, one only needs to find it.
+The \lstinline{Instrumentation} can be used for this again by calling \lstinline{Instrumentation::getAllLoadedClasses}.
+From the \textcite{javadoc:instrumentation}:
+\begin{quote}
+    \textit{Class[] getAllLoadedClasses()}\\
+    Returns an array of all classes currently loaded by the JVM.
+\end{quote}~\parencite{javadoc:instrumentation}
+With this method an array of \textbf{all} loaded classes is returned.
+The only task left is to query through it and find the \lstinline{@PluginInfo} annotation (or interface / class name, depending on the previously chosen strategy).
+
+To find all annotations from classes and methods one can invoke \lstinline{AnnotatedElement::getAnnotations}.\\
+From the \textcite{javadoc:annotated_element}
+\begin{quote}
+    \textit{Annotation[] getAnnotations()}
+    Returns all annotations present on this element. (Returns an array of length zero if this element has no annotations.) The caller of this method is free to modify the returned array; it will have no effect on the arrays returned to other callers.
+\end{quote}~\parencite{javadoc:annotated_element}
+Basically, an array with all class or method annotations is returned.
+To find the \lstinline{@PluginInfo} annotation, one has to query through all annotations, per class, and check rather any annotation is an instance of \lstinline{@PluginInfo}.
+
+If a class that is annotated by \lstinline{@PluginInfo} was found, one can call \lstinline{Class<T>::getMethods}.\\
+From the \textcite{javadoc:class}
+\begin{quote}
+    \textit{public Method[] getMethods() throws SecurityException}
+    Returns an array containing Method objects reflecting all the public member methods of the class or interface represented by this Class object, including those declared by the class or interface and those inherited from superclasses and superinterfaces. Array classes return all the (public) member methods inherited from the Object class. The elements in the array returned are not sorted and are not in any particular order. This method returns an array of length 0 if this Class object represents a class or interface that has no public member methods, or if this Class object represents a primitive type or void.\\
+    (\dots)
+\end{quote}~\parencite{javadoc:class}
+This method returns an array of all methods that are defined in that class.
+Next, by invoking \lstinline{AnnotatedElement::getAnnotations} again, all annotations of these methods are returned.
+The last thing left is to check if any of the method-annotations are an instance of \lstinline{@Task}.
+
+Once a plugin-class with a task-method is found, one can call it.
+However, first an instance of that class is needed for which a constructor is required.
+All constructors can be accessed by calling \lstinline{Class<T>::getConstructors}.
+From the \textcite{javadoc:class}
+\begin{quote}
+    \textit{public Constructor<?>[] getConstructors() throws SecurityException}\\
+    Returns an array containing Constructor objects reflecting all the public constructors of the class represented by this Class object. An array of length 0 is returned if the class has no public constructors, or if the class is an array class, or if the class reflects a primitive type or void. Note that while this method returns an array of Constructor<T> objects (that is an array of constructors from this class), the return type of this method is Constructor<?>[] and not Constructor<T>[] as might be expected. This less informative return type is necessary since after being returned from this method, the array could be modified to hold Constructor objects for different classes, which would violate the type guarantees of Constructor<T>[].\\
+    (\dots)
+\end{quote}~\parencite{javadoc:class}
+A fitting constructor must be chosen and \lstinline{Constructor<T>::newInstance} must be called.
+From the \textcite{javadoc:constructor}
+\begin{quote}
+    \textit{public T newInstance(Object\dots initargs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException}\\
+    Uses the constructor represented by this Constructor object to create and initialize a new instance of the constructor's declaring class, with the specified initialization parameters. Individual parameters are automatically unwrapped to match primitive formal parameters, and both primitive and reference parameters are subject to method invocation conversions as necessary.\\
+    (\dots)
+\end{quote}~\parencite{javadoc:constructor}
+Calling \lstinline{Constructor<T>::newInstance} will return a new instance of the class.
+
+Once obtained, the task-method can be called with \lstinline{Method::invoke}.
+From the \textcite{javadoc:method}
+\begin{quote}
+    \textit{public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException}\\
+    Invokes the underlying method represented by this Method object, on the specified object with the specified parameters. Individual parameters are automatically unwrapped to match primitive formal parameters, and both primitive and reference parameters are subject to method invocation conversions as necessary.\\
+    (\dots)
+\end{quote}~\parencite{javadoc:method}
+The first parameter is the just newly created instance of the class.
+Other parameters can be set to satisfy the task-method parameters.
+For simplicity, the task-method in the experiment has zero additional parameters.
 
 \labeledsubsection{Full experiment}
 Bla \dots
@@ -158,3 +229,5 @@ Bla \dots
 
 \labeledsubsubsection{Potential risks and threads extended scope}
 Bla \dots
+
+\labeledsubsubsection{How to improve security?}
