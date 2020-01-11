@@ -1,5 +1,4 @@
 \labeledsection{Appendix}
-CONTENT HERE \dots
 
 % Example image include:
 % \begin{figure}[!ht]
@@ -8,3 +7,28 @@ CONTENT HERE \dots
 %     \caption{Class Diagram Frontend}
 %     \label{fig:Class Diagram Frontend}
 % \end{figure}
+
+\labeledsubsection{Experiment Source Code}
+
+\labeledsubsubsection{Root project}
+\lstinputlisting[language=XML, label=lst:Root_POM]{code/pom.xml}
+
+\clearpage
+\labeledsubsubsection{Plugin-API}
+\lstinputlisting[language=XML, label=lst:PluginAPI_POM]{code/plugin-api/pom.xml}
+\lstinputlisting[language=Java, label=lst:PluginInfo]{code/plugin-api/src/main/java/nl/fontys/sear/plugin_system/api/PluginInfo.java}
+\lstinputlisting[language=Java, label=lst:Task]{code/plugin-api/src/main/java/nl/fontys/sear/plugin_system/api/Task.java}
+\lstinputlisting[language=Java, label=lst:Enable]{code/plugin-api/src/main/java/nl/fontys/sear/plugin_system/api/Enable.java}
+\lstinputlisting[language=Java, label=lst:Disable]{code/plugin-api/src/main/java/nl/fontys/sear/plugin_system/api/Disable.java}
+
+\clearpage
+\labeledsubsubsection{Plugin-System}
+\lstinputlisting[language=XML, label=lst:PluginSystem_POM]{code/plugin-system/pom.xml}
+\lstinputlisting[language=Manifest, label=lst:PluginSystem_Manifest]{code/plugin-system/src/main/resources/META-INF/MANIFEST.MF}
+\lstinputlisting[language=Java, label=lst:PluginLoader]{code/plugin-system/src/main/java/nl/fontys/sear/plugin_system/system/PluginLoader.java}
+\lstinputlisting[language=Java, label=lst:Plugin_DataClass]{code/plugin-system/src/main/java/nl/fontys/sear/plugin_system/system/PluginLoader.java}
+
+\clearpage
+\labeledsubsubsection{Plugin}
+\lstinputlisting[language=XML, label=lst:Plugin_POM]{code/plugin/pom.xml}
+\lstinputlisting[language=Java, label=lst:PluginMain]{code/plugin/src/main/java/nl/fontys/sear/plugin_system/plugin/PluginMain.java}
