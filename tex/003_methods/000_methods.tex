@@ -222,12 +222,76 @@ Other parameters can be set to satisfy the task-method parameters.
 For simplicity, the task-method in the experiment has zero additional parameters.
 
 \labeledsubsection{Full experiment}
-Bla \dots
+With the previous sub-section the plugin-system, with the \texttt{agent}/\lstinline{instrumentation}, is defined and a plugin exists, is loaded and the task-method was invoked.
+
+The full experiment goes a bit more into detail and uses cleaner code.
+Overall, the experiment not only has a task-method, but also a enable- and disable-method.
+All plugin information (such as the plugin-class, \lstinline{@PluginInfo} and all found methods) are stored in a separate data-class.
+Said data-class also implements helper-functions to make invoking said methods easier by simply calling \lstinline{Plugin::enable}, \lstinline{Plugin::disable} or \lstinline{Plugin::task}.
+Additionally, certain constraints, such as if the plugin file exists, are implemented and multiple plugins can be loaded by defining and searching in a specific folder for JAR files.
+
+The full source code can be found in the appendix starting from page~\pageref{subsec:Experiment Source Code}.
 
 \labeledsubsubsection{Potential risks and threads of a plugin-system (wanted dependency injection)}
-Bla \dots
+Using plugins in an application does come with huge risks.
+One cannot control what an external\footnote{external as in from someone else} \textit{plugin} does or does not do.
 
+The shown \textit{plugin-system} does not implement any security features and is probably the most basic example of doing dependency injections.
+With the current system, the \textit{plugin} can do virtually everything.
+This includes also accessing the \lstinline{instrumentation} and injecting something else into the classpath, modifying the classpath or exiting/killing the application (\textit{plugin-system}).
+However, with proper rights, a malicious plugin could also access the shell/command-line and do harm to the operating-system.
+While the first scenario is more likely, as \texttt{Java} (/our \textit{plugin-system}) does not implement isolation between \textit{plugins} and the application (/\textit{plugin-system}), the second scenario depends on which rights the application.
+Basically, in which environment the application is running, if it is allowed to access the shell/command-line and if, what it can do there.
+Of course, the \textit{plugin} could also be non-malicious and does exactly what it should do.
+
+The fact here is that there is no easy way of knowing what a \textit{plugin} might or could do.
+Currently, the second case sounds more dangerous but is actually easier to control: 
+When executing a \textit{plugin-system} it must be run in an \underline{isolated} and has to have as \underline{restricted permissions} as possible.
+Even better if run in a \underline{sandbox} or \underline{container} with next to non non-required features (e.g. removing most of the shell-commands), so that the host-system is fully separated.
+
+Meanwhile, the first scenario, that the \textit{plugin} modifies the classpath, other classes or returns wrong results, is actually hard to protect against.
+It may be possible to scan \textit{plugins} before loading to ensure that nothing within this JAR is accessing, for example, \texttt{Reflection-Access} / \lstinline{instrumentations} classes.
+However, this would require an entirely new project, including the research needed for this.
+This also would probably restrict the overall functions of \textit{plugins} heavily.
+
+The only truly safe way is to trust a developer, test \textit{plugins} in a protected environment first and, if available, look into the source code or decompile\footnote{Translating Java-ByteCode back to Java/Human Readable-Code} it.
+Additionally, the entire environment around the application has to be kept clean and secure to ensure that no other person can install an unwanted or malicious \textit{plugin}.
+However, all this requires external solutions.
+
+\clearpage
 \labeledsubsubsection{Potential risks and threads extended scope}
-Bla \dots
+The previous sub-sub-section focused on a \textit{plugin-system} /\\ a \underline{planned dependency-injection}.
+However, the entire scope can be extended to also include \underline{unwanted/unplanned dependency-injections} and other similar attacks.
+
+The main problem with most applications is that they use external dependencies.
+Such libraries can be hijacked and modified, to then either include malicious code or return wrong results.
+The linux operating system solves this issue by storing all binaries and shared libraries at a certain location and \underline{only} the \texttt{root} user has (/ should have) access to it.
+This way, no user, nor application, can inject, hijack or modify anything.
+Other operating systems, like Windows, do not have this level of security.
+Only the system libraries are securely stored, most other libraries and binaries are usually accessible by the current user and any application that is run by them.
+By utilizing and properly setting up tools like UAC\footnote{User-Access-Control} it is possible to archive a similar security level.
+
+Another huge risk are \textit{mods} for games.
+Many function on a similar base as the \textit{plugin-system}.
+Thus, any mod could, potentially, be malicious.
+This is especially the case when a user has to mod the game themselves, instead of letting a tool (such as a game-launcher) do this.
+By giving the option for practically everyone to create a mod and upload it anywhere, for others to download and install it, the risk of someone publishing a malicious mod is high.
+There is also no way of trusting user-statistics, comments and other indications on third-party sides.
 
 \labeledsubsubsection{How to improve security?}
+To overall increase security and protect against dependency-injection in any form, one must first of all secure their own systems.
+Only proper permissions, file access and access-control will lead to a safe system.
+
+Next, it is important to inform users of \textit{plugin-systems} or \textit{mods} that not every \textit{plugin}/\textit{mod} has necessarily good intensions.
+Creating a central place for all \textit{mods} or \textit{plugins} to be uploaded to also increases the security.
+Such a place must require a developer to sign-up so that, in case a malicious artifact was found, this user can be banned, the artifact removed and users informed about it.
+Thus, a platform also has to have a comment or ranking system, including the option to report malicious uploads.\\
+Even better, if the application has an integrated way of installing a \textit{plugin} or \textit{mod} in either the application itself or a launcher.
+A good example for this is \texttt{Visual Studio Code}, which features an integrated and controlled marketplace for all sorts of \textit{plugins}.
+Another example would be \texttt{NetBeans}, \texttt{IntelliJ IDEA/Jetbrains-Applications} or \texttt{Google Chrome/Chromium}.
+All feature such a central hub for uploading and installing \textit{plugins}.
+
+Finally, to be truly safe from dependency-injections one can execute an application only in an isolated, maybe containerized, environment with minimal to non additional tools and permissions.
+
+Additionally, it may be possible to scan \textit{plugins} or \textit{mods} for malicious or unwanted code.
+However, this process would be quiet expensive and probably also only works if the source code is available.
