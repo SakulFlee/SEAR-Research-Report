@@ -1,0 +1,63 @@
+\labeledsubsubsection{Loading plugins (injecting dependencies)}
+With the previous step the plugin-system finally can access the classpath and append potential plugins to it.
+To do this, a \textit{plugin} must exist.
+What exactly a \textit{plugin} is and how it is defined in our experiment is discussed in the next sub-sub-section.
+For now, we assume that a \textit{plugin} exists (in JAR form) at a fixed location, the application has access to it and it is a valid JAR.
+From now on everything is done outside of the \texttt{agent}, so our plugin-system starts in the \textit{standard} \lstinline{main}.
+
+First, a file to the location of that \textit{plugin} has to be created.\\
+From the \textcite{javadoc:file}:
+\begin{quote}
+    (\dots)
+    \\
+    User interfaces and operating systems use system-dependent pathname strings to name files and directories. This class presents an abstract, system-independent view of hierarchical pathnames. An abstract pathname has two components:
+
+        1. An optional system-dependent prefix string, such as a disk-drive specifier, "/" for the UNIX root directory, or "\textbackslash\textbackslash\textbackslash\textbackslash" for a Microsoft Windows UNC pathname, and
+
+        2. A sequence of zero or more string names.
+
+    The first name in an abstract pathname may be a directory name or, in the case of Microsoft Windows UNC pathnames, a hostname. Each subsequent name in an abstract pathname denotes a directory; the last name may denote either a directory or a file. The empty abstract pathname has no prefix and an empty name sequence.
+    \\
+    (\dots)
+\end{quote}~\parencite{javadoc:file}\\
+In \texttt{Java}, a \lstinline{File} is basically a reference to a location within the file-system.
+It does not have to exist and is not opened directly.
+For lucidness, file validation checks such as if the file exists and is accessible will be skipped here.
+
+Once the \lstinline{File} is defined a \lstinline{JarFile} has to be created, with the \lstinline{File} as an argument.
+From the \textcite{javadoc:jar_file}:
+\begin{quote}
+    The JarFile class is used to read the contents of a jar file from any file that can be opened with java.io.RandomAccessFile. It extends the class java.util.zip.ZipFile with support for reading an optional Manifest entry. The Manifest can be used to specify meta-information about the jar file and its entries.
+    \\
+    (\dots)
+\end{quote}~\parencite{javadoc:jar_file}\\
+A \lstinline{JarFile} is capable of reading and writing to a \lstinline{File} in JAR form.
+This is important for extracting information, such as classes and resources, from the JAR.
+
+Finally, the \lstinline{instrumentation} can be used to append the \lstinline{JarFile} to the system classpath by calling \lstinline{Instrumentation::appendToSystemClassLoaderSearch}.
+From the \textcite{javadoc:instrumentation}:
+\begin{quote}
+    This class provides services needed to instrument Java programming language code. Instrumentation is the addition of byte-codes to methods for the purpose of gathering data to be utilized by tools. Since the changes are purely additive, these tools do not modify application state or behavior. experiments of such benign tools include monitoring agents, profilers, coverage analyzers, and event loggers.
+    \\
+    (\dots)
+    \\
+    \textit{void appendToSystemClassLoaderSearch(JarFile jarfile)}\\
+    Specifies a JAR file with instrumentation classes to be defined by the system class loader. When the system class loader for delegation (see getSystemClassLoader()) unsuccessfully searches for a class, the entries in the JarFile will be searched as well.
+\end{quote}~\parencite{javadoc:instrumentation}
+This method adds the \textit{plugin} \lstinline{JarFile} to the system classpath.
+If a class is searched (by name), the class-loader will iterate through all classpath sources until a fitting class is found.
+If not, an exception is thrown.
+This also gives the option to query through all classes and find the \textit{plugin} classes/methods.
+
+The full operation may look like this:
+\begin{lstlisting}
+    // Define File with location of plugin
+    final File pluginFile = new File("path-to-jar/plugin.jar");
+    // File validations & constraints ...
+
+    // Create JarFile from 'pluginFile'
+    final JarFile pluginJAR = new JarFile(pluginFile);
+
+    // Append JarFile to system classpath
+    instrumentation.appendToSystemClassLoaderSearch(jarFile);
+\end{lstlisting}

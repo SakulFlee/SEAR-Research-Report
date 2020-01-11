@@ -1,0 +1,27 @@
+\labeledsubsubsection{Defining a plugin}
+The previous sub-sub-sections already prepared everything to load a plugin.
+However, it is not yet defined what a \textit{plugin} actually is.
+This sub-sub-section is important for the following sub-sub-section.
+
+There are multiple ways of defining a \textit{plugin}.
+One way would be to use specific class and method names.
+Another way is to utilize \underline{interfaces} and/or \underline{abstract classes}.
+In \texttt{Java}, there is a third good option: 
+Using \underline{annotations} (\underline{@interfaces}).
+
+The experiment uses an \underline{annotation} to denote a class as a \textit{plugin-class}.
+A \textit{plugin-class} is the entry-point of a plugin.
+It defines the name and version of a plugin and the class that is annotated will be searched for \textit{plugin-methods}, which will be handled next.
+The following code shows how the class \underline{annotation} is defined in the experiment:
+\lstinputlisting[language=Java, linerange={8-14}]{./code/plugin-api/src/main/java/nl/fontys/sear/plugin_system/api/PluginInfo.java}
+
+Another \underline{annotation} is used to denote the exact \textit{plugin-method}.
+Said method is the main reason why the \textit{plugin-system} wanted to load the \textit{plugin} in the first place.
+In a real scenario this method would either initialize the plugin or perform a certain task that is wanted by the \textit{plugin-system}.
+This is also the main attack point in the later analysis.
+\lstinputlisting[language=Java, linerange={8-11}]{./code/plugin-api/src/main/java/nl/fontys/sear/plugin_system/api/Task.java}
+
+\clearpage
+
+An example plugin entry-point class would look like this:
+\lstinputlisting[language=Java, linerange={8-9, 20-23, 24}]{./code/plugin/src/main/java/nl/fontys/sear/plugin_system/plugin/PluginMain.java}

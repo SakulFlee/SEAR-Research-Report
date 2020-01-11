@@ -1,0 +1,17 @@
+\labeledsubsubsection{How to improve security?}
+To overall increase security and protect against dependency-injection in any form, one must first of all secure their own systems.
+Only proper permissions, file access and access-control will lead to a safe system.
+
+Next, it is important to inform users of \textit{plugin-systems} or \textit{mods} that not every \textit{plugin}/\textit{mod} has necessarily good intensions.
+Creating a central place for all \textit{mods} or \textit{plugins} to be uploaded to also increases the security.
+Such a place must require a developer to sign-up so that, in case a malicious artifact was found, this user can be banned, the artifact removed and users informed about it.
+Thus, a platform also has to have a comment or ranking system, including the option to report malicious uploads.\\
+Even better, if the application has an integrated way of installing a \textit{plugin} or \textit{mod} in either the application itself or a launcher.
+A good example for this is \texttt{Visual Studio Code}, which features an integrated and controlled marketplace for all sorts of \textit{plugins}.
+Another example would be \texttt{NetBeans}, \texttt{IntelliJ IDEA/Jetbrains-Applications} or \texttt{Google Chrome/Chromium}.
+All feature such a central hub for uploading and installing \textit{plugins}.
+
+Finally, to be truly safe from dependency-injections one can execute an application only in an isolated, maybe containerized, environment with minimal to non additional tools and permissions.
+
+Additionally, it may be possible to scan \textit{plugins} or \textit{mods} for malicious or unwanted code.
+However, this process would be quiet expensive and probably also only works if the source code is available.
