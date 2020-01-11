@@ -3,9 +3,9 @@ Dependency-Injection is a technique used to dynamically add and load \textit{dep
 Although, the name implies that \textit{dependencies} are added, these \textit{dependencies} however are not necessarily required.
 When referring to \textit{injecting} such a \textit{dependency} we either, mean overwriting a required \textit{dependency} and thus changing its behavior, or, adding and loading a new previously not needed \textit{dependency} to extend the application in some form.
 
-When loading a new \textit{dependency} we call it \textit{Planned Dependency-Injection} or \textit{Wanted Dependency-Injection}.
+When loading a new \textit{dependency} we call it \underline{Planned Dependency-Injection} or \underline{Wanted Dependency-Injection}.
 This is more commonly know and understood as an application having a \textit{Plugin-System} or the ability to load \textit{plugins}.
-From now on we will use the term \underline{plugin} in context of a \textit{Planned Dependency-Injection}.
+From now on we will use the term \textit{plugin} in context of a \underline{Planned Dependency-Injection}.
 Actively implementing \textit{Dependency-Injection} and expecting \textit{plugins} to be injected implies, that at some point, somewhere within the system (not necessarily application), something needs to inject, and thus add and load, this \textit{plugin}.
 If an application is designed to expect \textit{dependencies} to be \textit{injected} it usually also takes care of loading and managing \textit{plugins}.
 But it is also possible to allow \textit{dependencies} to be \textit{injected} without managing \textit{plugins}.
@@ -19,9 +19,10 @@ In theory, any library that is used or even the application itself can be inject
 There are a few things someone can do to ensure the safety and minimizing the risk of this happening such as releasing not only the binaries, but also a hashed file to compare against to spot modifications or restricting access to the application and libraries.
 However, overall almost any application and library is vulnerable to this.
 For some binaries it is easier to do, for some harder.
-To be a 100\% protected from this one would have to write \textbf{everything}, including compilers, libraries, programs, etc., themselves and restrict access to \underline{only them}.
+To be truly protected from this one would have to do \textbf{everything}, including compilers, libraries, programs, etc., themselves and restrict access to \underline{only them}.
+And even then it is likely to exploit this at some point.
 
-There is also a mid-case scenario where the application encourages \textit{dependencies} to be changed/injected, but does not actively engage in anything other than using said library.
+There is also a mid-case scenario where the application encourages \textit{dependencies} to be changed (injected), but does not actively engage in anything other than using said library.
 One can write an API for a specific task, e.g. managing a cloud provider, and release for each difference another library.
 The user/administrator then can chose which library they use, in this case which cloud provider they are using, and install/overwrite that specific library.
 This works as the application is designed in a way that it expects a certain \textit{dependency} to be at a certain spot and that this library is implemented using the API.
