@@ -26,8 +26,6 @@ The \lstinline{premain}/\lstinline{agentmain} arguments and the \lstinline{instr
 The plugin-system needs the \lstinline{instrumentation}, thus it has to be stored globally/statically somewhere, where the plugin-system later can access it.
 It is important to \textbf{not} invoke anything else here and \textbf{not} call the \textit{standard} \lstinline{main}.
 
-\clearpage
-
 After defining both methods, the classpath of the class(es) these methods are in must be defined in the \lstinline{MANIFEST.MF}.\\
 From the experiment:
 \lstinputlisting[
