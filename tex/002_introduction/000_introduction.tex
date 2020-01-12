@@ -5,7 +5,7 @@ When referring to \textit{injecting} such a \textit{dependency} we either, mean 
 
 When loading a new \textit{dependency} we call it \underline{Planned Dependency-Injection} or \underline{Wanted Dependency-Injection}.
 This is more commonly know and understood as an application having a \textit{Plugin-System} or the ability to load \textit{plugins}.
-From now on we will use the term \textit{plugin} in context of a \underline{Planned Dependency-Injection}.
+From now on we will use the term \textit{plugin} in context of a\\\underline{Planned Dependency-Injection}.
 Actively implementing \textit{Dependency-Injection} and expecting \textit{plugins} to be injected implies, that at some point, somewhere within the system (not necessarily application), something needs to inject, and thus add and load, this \textit{plugin}.
 If an application is designed to expect \textit{dependencies} to be \textit{injected} it usually also takes care of loading and managing \textit{plugins}.
 But it is also possible to allow \textit{dependencies} to be \textit{injected} without managing \textit{plugins}.
@@ -29,6 +29,23 @@ This works as the application is designed in a way that it expects a certain \te
 The application then can load the library independent of which implementation it is and call the APIs functions, which then will get translated to function calls from the replaced library.
 This scenario can also be seen as modding\footnote{Modding as in modifying} an application which can be often found in various games.
 
-% TODO: abuse of wanted Dependency-Injection
-
-% TODO: What are the positive benefits vs. negative impacts?
+The following overall positive benefits and contrary negative impacts can be observed:
+\begin{center}
+    \begin{tabular}{|p{5cm}|p{5cm}|}
+        \hline
+        \textbf{Positive benefits} & \textbf{Negative impacts} \\\hline
+        \begin{itemize}
+            \item Easy to extend
+            \item Separation of code bases
+            \item Design decision to enable \textit{plugins}/\textit{mods}
+            \item Configurability\footnote{User can decide what to install}
+        \end{itemize} &
+        \begin{itemize}
+            \item Easy to exploit
+            \item Implementing a \textit{Plugin-System} makes an application vulnerable
+            \item Hard to shield against
+            \item True security almost impossible to archive
+        \end{itemize}
+        \\\hline
+    \end{tabular}
+\end{center}
