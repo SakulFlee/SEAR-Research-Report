@@ -1,0 +1,17 @@
+# LaTeX build files
+*.bib
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pytxcode
+*.run.xml
+*.synctex.gz
+*.toc
+
+# Generated files
+*.pdf
+*.zip
