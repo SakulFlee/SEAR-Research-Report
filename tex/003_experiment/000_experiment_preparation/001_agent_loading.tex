@@ -7,7 +7,7 @@ From the \textcite{javadoc:instrument}:
 \begin{quote}
     [The package p]rovides services that allow Java programming language agents to instrument programs running on the JVM\footnote{Java-Virtual-Machine}.\newline
     The mechanism for instrumentation is modification of the byte-codes of methods.
-\end{quote}~\parencite{javadoc:instrument}\\
+\end{quote}
 This is usually used by diagnostic tools, such as debugger, tracer or profiler, to get access over the current JRE and heap to perform modifications or analytic work.
 However, the experiment will use it to inject our dependency (plugin) into the classpath and then access the class loader to find the injected classes and finally invoke them.
 
