@@ -1,15 +1,21 @@
 \abstract
-Dependency-Injection is a technique used to dynamically add and load dependencies within an application.
-This can be wanted but also unwanted.
+Dependency-Injection is a technique used to add and load dependencies within an application dynamically.
+Being able to alter an application dynamically can be both, wanted and unwanted.
+This research report will evaluate if enabling Dependency-Injection in Java poses higher risks and threads or if the benefits are worth taking risks.
+Additionally, it might be possible to remove the risks and threads altogether.
+It should be evident that alerting a running application, especially dynamically, can be of high-security risk.
 
-This research report will evaluate whether, enabling Dependency-Injection in Java comes with high risk and poses a high threat to the application, or, if implementing it properly is worth the risk, comes with benefits and if it is possible to prevent unwanted injections and scenarios to happen.
-Initially, it was planned to conduct a qualitative empirical experiment, showcasing different levels of security, and evaluate based on that what can be done to prevent this.
-However, later we decided to rather inform about potential attacks and exploits, rather than prove how one can inject malicious code.
-Additionally, different types of injecting ("attacking") will be discussed.
+Initially, we planned to conduct a qualitative empirical experiment, showcasing different levels of security, and evaluate based on these results what measures can be taken to reduce the overall risk.
+However, later we decided that informing about the potential risks, threats, attacks and exploits is a better approach for this report.
+Doing so, we do not prove how one can inject malicious code, but what is possible when dynamically loading and injecting code into an application.
+Additionally, different types of injecting (``attacking'') will be discussed.
 
 We will first cover what \textit{Dependency-Injection} is and define some terms we will use in the report.
 During that, we talk about different scenarios where \textit{Dependency-Injection} applies.
 Next, we explain, on a basic level, how one can implement \textit{Dependency-Injection} in \textbf{Java}, how to handle it and conduct our experiment.
 Afterwards, we present and evaluate our results and finally discuss what these results mean.
+
+In summary, we found out that dependency-injection is indeed possible and, without further securing an application, can pose a high risk not only to the application, but also the system and user.
+However, there are also benefits, such as being able to extend an application to the users' needs dynamically.
 
 \clearpage
