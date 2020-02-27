@@ -1,12 +1,12 @@
 \labeledsection{Introduction}
-The term \textit{Dependency-Injection} was formulated by Martin Fowler in 2004~\cite{dependency_injection_pattern}.
+The term \textit{Dependency-Injection} was formulated by~\textcite{dependency_injection_pattern}.
 \textit{Dependency-Injection} is an addition to the \textit{concept of inversion of control}.\\
 The \textit{concept of inversion of control} describes the process of inverting the flow of control within a system, compared to the traditional control flow. 
-By doing this, the modularity and extendability increases~\cite{designing_reusable_classes, object_oriente_framworks}.
+By doing this, the modularity and extendability increases~\parencite{designing_reusable_classes, object_oriented_framworks}.
 
 In \textit{Dependency-Injection}, the process of obtaining dependencies is inverted.
 Instead of linking dependencies with or into the application, the application itself searches for dependencies and loads them dynamically.
-Doing so not only makes applications much more extendible but gives the option to have optional dependencies~\cite{dependency_injection_pattern, empirical_study_dependency_injection, effects_of_dependency_injection_on_maintainability, enterprise_application_development_using_dependency_injection}.
+Doing so not only makes applications much more extendible but gives the option to have optional dependencies~\parencite{dependency_injection_pattern, empirical_study_dependency_injection, effects_of_dependency_injection_on_maintainability, enterprise_application_development_using_dependency_injection}.
 
 When referring to \textit{injecting dependencies} we either, mean overwriting a required \textit{dependency} and thus changing its behaviour, or, adding and loading a new previously not needed (i.e.~optional) \textit{dependency} to extend the application.
 
@@ -19,7 +19,7 @@ However, this is not always wanted.
 Thus it is optional and can be enabled by adding and loading a dependency dynamically (i.e.~injecting it).
 
 Another real-life example of optional dependencies is \texttt{Visual Studio Code}.
-\texttt{Visual Studio Code} has a defined \textit{Extension API}~\cite{visual_studio_code}.
+\texttt{Visual Studio Code} has a defined \textit{Extension API}~\parencite{visual_studio_code}.
 Each extension builds upon this API and is in itself independent and optional.
 However, a user can now dynamically install (i.e.~inject), remove, enable or disable an extension, without the need of recompiling the application.
 
