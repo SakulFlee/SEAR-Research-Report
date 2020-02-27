@@ -3,11 +3,11 @@ The plugin-system needs a way of loading a plugin.
 In \texttt{Java} loading means either, appending it to the classpath of the current environment (JRE\footnote{Java-Runtime-Environment}), or, creating a new secondary classpath with a new class loader implementation.
 
 The official way of modifying the class-path at runtime is to use an \texttt{Java Agent} / the \texttt{java.lang.Instrument} package. \\
-From the \textcite{javadoc:instrument}:
+From the JavaDoc:
 \begin{quote}
-    [The package p]rovides services that allow Java programming language agents to instrument programs running on the JVM\footnote{Java-Virtual-Machine}.\newline
+    [The package] Provides services that allow Java programming language agents to instrument programs running on the JVM\footnote{Java-Virtual-Machine}.\newline
     The mechanism for instrumentation is modification of the byte-codes of methods.
-\end{quote}
+\end{quote}\parencite{javadoc:instrument}\\
 This is usually used by diagnostic tools, such as debugger, tracer or profiler, to get access over the current JRE and heap to perform modifications or analytic work.
 However, the experiment will use it to inject our dependency (plugin) into the classpath and then access the class loader to find the injected classes and finally invoke them.
 
