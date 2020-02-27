@@ -23,13 +23,15 @@ Another real-life example of optional dependencies is \texttt{Visual Studio Code
 Each extension builds upon this API and is in itself independent and optional.
 However, a user can now dynamically install (i.e.~inject), remove, enable or disable an extension, without the need of recompiling the application.
 
-The main security risk, which we are also focusing on in this report, comes from the fact that external \textit{dependencies} may not always come from the same developers.
+We hypothesise that designing an application with \textit{dependency-injection} in-mind will ultimately come with severe risks and threats not only to the user but the whole system and environment.
+We believe that the main security risk comes from the fact that external \textit{dependencies} may not always come from the same developers.
 Thus, the application creators cannot guarantee the trustworthiness and safety of these dependencies.
+We will focus on this in the following sections.
 Usually, there are measures taken to prevent unsafe extensions, but there also is usually a way to turn those measures off or add an exception for specific extensions.
 Thus, ultimately, the user is a high-risk factor and should always be warned.
 Additionally, it is incredibly easy to hide malicious code this way and overwriting trusted dependencies will probably not even be noticed.
 
-The following positive benefits and contrary negative impacts can be observed:
+The following positive benefits and contrary, negative impacts can be observed:
 \begin{center}
     \begin{tabular}{|p{0.45\textwidth}|p{0.45\textwidth}|}
         \hline
