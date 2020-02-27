@@ -6,7 +6,7 @@ For now, we assume that a \textit{plugin} exists (in JAR form) at a fixed locati
 From now on everything is done outside of the \texttt{agent}, so our plugin-system starts in the \textit{standard} \lstinline{main}.
 
 First, a file to the location of that \textit{plugin} has to be created.\\
-From the \textcite{javadoc:file}:
+From the JavaDoc:
 \begin{quote}
     (\dots)
     \\
@@ -19,23 +19,23 @@ From the \textcite{javadoc:file}:
     The first name in an abstract pathname may be a directory name or, in the case of Microsoft Windows UNC pathnames, a hostname. Each subsequent name in an abstract pathname denotes a directory; the last name may denote either a directory or a file. The empty abstract pathname has no prefix and an empty name sequence.
     \\
     (\dots)
-\end{quote}
+\end{quote}~\parencite{javadoc:file}
 In \texttt{Java}, a \lstinline{File} is basically a reference to a location within the file-system.
 It does not have to exist and is not opened directly.
 For lucidness, file validation checks such as if the file exists and is accessible will be skipped here.
 
 Once the \lstinline{File} is defined a \lstinline{JarFile} has to be created, with the \lstinline{File} as an argument.
-From the \textcite{javadoc:jar_file}:
+From the JavaDoc:
 \begin{quote}
     The JarFile class is used to read the contents of a jar file from any file that can be opened with java.io.RandomAccessFile. It extends the class java.util.zip.ZipFile with support for reading an optional Manifest entry. The Manifest can be used to specify meta-information about the jar file and its entries.
     \\
     (\dots)
-\end{quote}
+\end{quote}~\textcite{javadoc:jar_file}
 A \lstinline{JarFile} is capable of reading and writing to a \lstinline{File} in JAR form.
 This is important for extracting information, such as classes and resources, from the JAR.
 
-Finally, the \lstinline{instrumentation} can be used to append the \lstinline{JarFile} to the system classpath by calling \lstinline{Instrumentation::appendToSystemClassLoaderSearch}.
-From the \textcite{javadoc:instrumentation}:
+Finally, the \lstinline{instrumentation} can be used to append the \lstinline{JarFile} to the system classpath by calling \lstinline{Instrumentation::appendToSystemClassLoaderSearch}.\\
+From the JavaDoc:
 \begin{quote}
     This class provides services needed to instrument Java programming language code. Instrumentation is the addition of byte-codes to methods for the purpose of gathering data to be utilized by tools. Since the changes are purely additive, these tools do not modify application state or behavior. experiments of such benign tools include monitoring agents, profilers, coverage analyzers, and event loggers.
     \\
@@ -43,7 +43,7 @@ From the \textcite{javadoc:instrumentation}:
     \\
     \textit{void appendToSystemClassLoaderSearch(JarFile jarfile)}\\
     Specifies a JAR file with instrumentation classes to be defined by the system class loader. When the system class loader for delegation (see getSystemClassLoader()) unsuccessfully searches for a class, the entries in the JarFile will be searched as well.
-\end{quote}
+\end{quote}~\textcite{javadoc:instrumentation}
 This method adds the \textit{plugin} \lstinline{JarFile} to the system classpath.
 If a class is searched (by name), the class-loader will iterate through all classpath sources until a fitting class is found.
 If not, an exception is thrown.
