@@ -1,51 +1,55 @@
 \labeledsection{Introduction}
-Dependency-Injection is a technique used to dynamically add and load \textit{dependencies} within an application.
-Although, the name implies that \textit{dependencies} are added, these \textit{dependencies} however are not necessarily required.
-When referring to \textit{injecting} such a \textit{dependency} we either, mean overwriting a required \textit{dependency} and thus changing its behavior, or, adding and loading a new previously not needed \textit{dependency} to extend the application in some form.
+The term \textit{Dependency-Injection} was formulated by Martin Fowler in 2004~\cite{dependency_injection_pattern}.
+\textit{Dependency-Injection} is an addition to the \textit{concept of inversion of control}.\\
+The \textit{concept of inversion of control} describes the process of inverting the flow of control within a system, compared to the traditional control flow. 
+By doing this, the modularity and extendability increases~\cite{designing_reusable_classes}\cite{object_oriente_framworks}.
 
-When loading a new \textit{dependency} we call it \underline{Planned Dependency-Injection} or \underline{Wanted Dependency-Injection}.
-This is more commonly know and understood as an application having a \textit{Plugin-System} or the ability to load \textit{plugins}.
-From now on we will use the term \textit{plugin} in context of a\\\underline{Planned Dependency-Injection}.
-Actively implementing \textit{Dependency-Injection} and expecting \textit{plugins} to be injected implies, that at some point, somewhere within the system (not necessarily application), something needs to inject, and thus add and load, this \textit{plugin}.
-If an application is designed to expect \textit{dependencies} to be \textit{injected} it usually also takes care of loading and managing \textit{plugins}.
-But it is also possible to allow \textit{dependencies} to be \textit{injected} without managing \textit{plugins}.
-In either case at least an entry point for the \textit{plugin} is needed. 
-This is usually done by defining a public-api that provides a way of defining said entry-point and possible more.
+In \textit{Dependency-Injection}, the process of obtaining dependencies is inverted.
+Instead of linking dependencies with or into the application, the application itself searches for dependencies and loads them dynamically.
+Doing so not only makes applications much more extendible but gives the option to have optional dependencies~\cite{dependency_injection_pattern}.
 
-The opposite scenario, an application that is not designed to except or accept \textit{dependencies} to be \textit{injected}, does not need any of the above.
-Virtually any application that is not actively encouraging \textit{dependency-injection} or exposing a plugin-api fall into this category.
-Simply not implementing a \textit{plugin-system} does not protect your application.
-In theory, any library that is used or even the application itself can be injected with \underline{bad code}\footnote{Malicious instructions} or replaced all together.
-There are a few things someone can do to ensure the safety and minimizing the risk of this happening such as releasing not only the binaries, but also a hashed file to compare against to spot modifications or restricting access to the application and libraries.
-However, overall almost any application and library is vulnerable to this.
-For some binaries it is easier to do, for some harder.
-To be truly protected from this one would have to do \textbf{everything}, including compilers, libraries, programs, etc., themselves and restrict access to \underline{only them}.
-And even then it is likely to exploit this at some point.
+When referring to \textit{injecting dependencies} we either, mean overwriting a required \textit{dependency} and thus changing its behaviour, or, adding and loading a new previously not needed (i.e.~optional) \textit{dependency} to extend the application.
 
-There is also a mid-case scenario where the application encourages \textit{dependencies} to be changed (injected), but does not actively engage in anything other than using said library.
-One can write an API for a specific task, e.g. managing a cloud provider, and release for each difference another library.
-The user/administrator then can chose which library they use, in this case which cloud provider they are using, and install/overwrite that specific library.
-This works as the application is designed in a way that it expects a certain \textit{dependency} to be at a certain spot and that this library is implemented using the API.
-The application then can load the library independent of which implementation it is and call the APIs functions, which then will get translated to function calls from the replaced library.
-This scenario can also be seen as modding\footnote{Modding as in modifying} an application which can be often found in various games.
+For better understanding, we consider the following examples:\\
+An application may have a part that is responsible for talking and exchanging information to and from a specific database server.
+There can be two versions of this: A production-ready and a development-environment piece.
+Instead of creating two separate applications (e.g. one for production, one for development), the application can use some internal logic (e.g. direct input, configuration files or environment flags) to determine which version to use (i.e. inject).
+The same application may have another feature that lets it cache those requests.
+However, this is not always wanted. 
+Thus it is optional and can be enabled by adding and loading a dependency dynamically (i.e.~injecting it).
 
-The following overall positive benefits and contrary negative impacts can be observed:
+Another real-life example of optional dependencies is \texttt{Visual Studio Code}.
+\texttt{Visual Studio Code} has a defined \textit{Extension API}~\cite{visual_studio_code}.
+Each extension builds upon this API and is in itself independent and optional.
+However, a user can now dynamically install (i.e. inject), remove, enable or disable an extension, without the need of recompiling the application.
+
+The main security risk, which we are also focusing on in this report, comes from the fact that external \textit{dependencies} may not always come from the same developers.
+Thus, the application creators cannot guarantee the trustworthiness and safety of these dependencies.
+Usually, there are measures taken to prevent unsafe extensions, but there also is usually a way to turn those measures off or add an exception for specific extensions.
+Thus, ultimately, the user is a high-risk factor and should always be warned.
+Additionally, it is incredibly easy to hide malicious code this way and overwriting trusted dependencies will probably not even be noticed.
+
+The following positive benefits and contrary negative impacts can be observed:
 \begin{center}
-    \begin{tabular}{|p{5cm}|p{5cm}|}
+    \begin{tabular}{|p{0.45\textwidth}|p{0.45\textwidth}|}
         \hline
         \textbf{Positive benefits} & \textbf{Negative impacts} \\\hline
         \begin{itemize}
-            \item Easy to extend
-            \item Separation of code bases
-            \item Design decision to enable \textit{plugins}/\textit{mods}
-            \item Configurability\footnote{User can decide what to install}
+            \item Application easy to extend
+            \item Separation of code bases into dependencies
+            \item Design decision to implement \textit{dependency-injection}
+            \item Optional dependencies
+            \item Configurability\footnotemark[1]
         \end{itemize} &
         \begin{itemize}
             \item Easy to exploit
-            \item Implementing a \textit{Plugin-System} makes an application vulnerable
+            \item Third-party dependencies cannot be trusted
             \item Hard to shield against
             \item True security almost impossible to archive
+            \item Difficult to find malicious code hiding in genuine applications
         \end{itemize}
         \\\hline
     \end{tabular}
+    \captionof{table}{Positive benefits vs. Negative impacts}
 \end{center}
+\footnotetext[1]{User can decide what to install}
