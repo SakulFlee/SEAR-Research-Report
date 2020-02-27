@@ -1,15 +1,15 @@
 \labeledsection{Methods}
-% documented experiment and a demonstration of technical understanding
+To prove our hypothesis, we first create a simple experiment and demonstrate the techniques of \textit{dependency-injection}.
+Based on this, we then try to estimate the security risk of an application utilizing \textit{dependency-injection} versus one that does not.
 
-Before starting the experiment it has to be created first.
-In order to implement a plugin-system there are multiple requirements that first have to be fulfilled.
-A \textit{plugin} has to be loaded and, in order to be useful, has to conduct a certain task.
-For simplicity, the experiment will implement the plugin-system directly, without anything else, and the \textit{plugin} will conduct a very simple task.
-The ultimate goal is to show and explain how a \textbf{wanted dependency-injection} works and what risks come with it.
-Furthermore, with the acquired knowledge a greater picture of risks and threats about the overall \textbf{dependency-injection} topic can be made.
+For the experiment, we will implement a plugin system in \texttt{Java}.
+The plugin system will be capable of loading (i.e.~injecting) plugins into a running application.
+To keep the application simple, we will only create and load one plugin.
+Said plugin does only perform an effortless task (such as printing a message to the console), as we use it to demonstrate how one can implement \textit{dependency-injection} into an application.
+This plugin will depend on a defined Plugin API to give a common point of reference for both the plugin and the plugin system.
 
-It is also important to note that the experiment is implemented in \texttt{Java}.
-The same overall idea can be applied to other programming languages as well, but will be implemented differently.
+The ultimate goal of this experiment is to demonstrate and explain how \textit{dependency-injection} can be used to extend applications dynamically and what risks come with it.
+Furthermore, with the acquired knowledge, a more exceptional picture of risks and threats about the overall \textit{dependency-injection} topic can be made.
 
 \input{tex/003_methods/000_experiment_preparation/000_experiment_preparation.tex}
 \input{tex/003_methods/001_fulll_experiment/000_full_experiment.tex}
