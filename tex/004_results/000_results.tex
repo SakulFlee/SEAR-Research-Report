@@ -1,28 +1,36 @@
 \labeledsection{Results}
-CONTENT HERE \dots
+The previous section did introduce our methods and defined the experiment.
+This section will address our findings and give a transition to the following discussion part.
 
-% \labeledsubsubsection{Potential risks and threads of a plugin-system (wanted dependency injection)}
-% Using plugins in an application does come with huge risks.
-% One cannot control what an external\footnote{external as in from someone else} \textit{plugin} does or does not do.
+With the experiment defined, we can perceive how such a simple plugin system can be a considerable threat to the whole operating environment.
+Especially with unprotected systems, a plugin can do virtually anything.
+With the assumption that \textbf{all} plugins (extensions, modules, dependencies, libraries, \dots) are developed by the same application developers and are tested, there should be nearly no direct risk.
+However, as soon as a (or multiple) third-party developers get introduced, the potential risk rises dramatically.
+Not only are third-party plugins posing a high threat, but hijacking\footnote{introducing malicious code} such can be even more straightforward than official plugins.
+Additionally, enabling third-party plugins probably also enables the manual installation of plugins, which in itself can be a high risk already.
+Instead of getting plugins from a controlled central location, they now can come from anywhere and be possibly impossible to check for genuineness.
 
-% The shown \textit{plugin-system} does not implement any security features and is probably the most basic example of doing dependency injections.
-% With the current system, the \textit{plugin} can do virtually everything.
-% This includes also accessing the \lstinline{instrumentation} and injecting something else into the classpath, modifying the classpath or exiting/killing the application (\textit{plugin-system}).
-% However, with proper rights, a malicious plugin could also access the shell/command-line and do harm to the operating-system.
-% While the first scenario is more likely, as \texttt{Java} (/our \textit{plugin-system}) does not implement isolation between \textit{plugins} and the application (/\textit{plugin-system}), the second scenario depends on which rights the application.
-% Basically, in which environment the application is running, if it is allowed to access the shell/command-line and if, what it can do there.
-% Of course, the \textit{plugin} could also be non-malicious and does exactly what it should do.
+It should be clear that by utilizing  \textit{dependency-injection} the application can pose a threat to the whole environment by the simple fact that the original application developers do not have control over what these plugins may or may not do.
+With the current plugin system, a plugin can do everything the operating user could do.
+Depending on their system permissions, the damage could be minimal but could also be tremendous.
+However, not everything is terrible.
 
-% The fact here is that there is no easy way of knowing what a \textit{plugin} might or could do.
-% Currently, the second case sounds more dangerous but is actually easier to control: 
-% When executing a \textit{plugin-system} it must be run in an \underline{isolated} and has to have as \underline{restricted permissions} as possible.
-% Even better if run in a \underline{sandbox} or \underline{container} with next to non non-required features (e.g. removing most of the shell-commands), so that the host-system is fully separated.
+With \textit{dependency-injection}, an application becomes much more extendable and flexible.
+Depending on the plugin API, a plugin can potentially change the whole application in a way not even anticipated by the application developers.
+Opening up the plugin development to third-parties can build a great and big community, potentially extending the application with zero-cost.
+On top of that, each user can individually choose which components are needed and thus creating an individual configured application for themselves.
 
-% Meanwhile, the first scenario, that the \textit{plugin} modifies the classpath, other classes or returns wrong results, is actually hard to protect against.
-% It may be possible to scan \textit{plugins} before loading to ensure that nothing within this JAR is accessing, for example, \texttt{Reflection-Access} / \lstinline{instrumentations} classes.
-% However, this would require an entirely new project, including the research needed for this.
-% This also would probably restrict the overall functions of \textit{plugins} heavily.
+To further demonstrate possible exploits, we describe two possible scenarios:\\
+In the first exploit, a module got replaced with a hijacked one.
+The hijacked module does not do anything other than the original module but returns wrong results.
+This exploit could, for example, lead to a disaster in the accounting department.
+\clearpage
+The second exploit tries to do as much damage as possible.
+By utilizing access to the system, it tries to delete data and thus will ultimately render the current system useless.
+Such an exploit could delete essential data and possibly even ruin a whole environment.
 
-% The only truly safe way is to trust a developer, test \textit{plugins} in a protected environment first and, if available, look into the source code or decompile\footnote{Translating Java-ByteCode back to Java/Human Readable-Code} it.
-% Additionally, the entire environment around the application has to be kept clean and secure to ensure that no other person can install an unwanted or malicious \textit{plugin}.
-% However, all this requires external solutions.
+It is easier to shield against the second exploit as this one requires shell/system access (such as BaSH on Linux) and sufficient user rights to perform destructive tasks.
+However, shielding against the first exploit is very difficult as the hijacked module most likely seems like the original one.
+
+Ultimately, it should be clear that when implementing \textit{dependency-injection}, the overall security and safety of all users, systems and environments are at risk. 
+Thus security measures must be considered.
